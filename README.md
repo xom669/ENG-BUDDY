@@ -20,29 +20,29 @@
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
-### 1. 📷 Intelligent Note Vault & On-Device Computer Vision
-* **Laplacian Blur Quality Gate:** Real-time variance-of-Laplacian blur calculation (`BLUR_THRESHOLD = 85.0`) on device before saving photos to ensure legible board/notebook notes.
+### 1. Intelligent Note Vault & On-Device Computer Vision
+* **Laplacian Blur Quality Gate:** Real-time variance-of-Laplacian blur calculation (`BLUR_THRESHOLD = 85.0`) on device before saving photos to ensure legible board and notebook notes.
 * **Perceptual Deduplication:** Identifies and filters duplicates using 64-bit difference hashing (dHash), perceptual hashing (pHash), and SSIM comparison.
 * **Timetable-Aware Auto-Filing:** Time-slotted class detection automatically routes Tuesday 10:15 AM snapshots straight into the *Thermodynamics* folder without manual tagging.
 * **Smart Vault & 30-Day Recycle Bin:** Full offline storage via SQLite Room, tag search, and safe 30-day auto-purging trash retention.
 
-### 2. 📊 Interactive "Bunk Horizon" Attendance Manager
+### 2. Interactive "Bunk Horizon" Attendance Manager
 * **Zero-Guesswork Math:** Calculates exact permissible bunks and required recovery classes to stay safely above the mandatory 75% university cutoff.
-* **Actionable Notification Actions:** Background notifications via Android `WorkManager` allow students to log attendance directly from their lock screen (`[✅ Attending]`, `[❌ Bunking]`, `[🚫 Class Cancelled]`).
+* **Actionable Notification Actions:** Background notifications via Android `WorkManager` allow students to log attendance directly from their lock screen (`[Attending]`, `[Bunking]`, `[Class Cancelled]`).
 
-### 3. 🤖 Clean Unicode Math & AI Exam Crammer
+### 3. Clean Unicode Math & AI Exam Crammer
 * **Gemini 2.5 Flash RAG Engine:** Grounded exclusively in scanned lecture notes and syllabus outlines.
 * **Zero Raw LaTeX Clutter:** Strict system prompt rules enforce human-readable UTF-8 symbols (`∫`, `∂`, `∑`, `√`, `α`, `β`, `²`) rather than raw, unrendered backslash math (`\frac{d}{dx}`).
 * **High-Yield Revision Formats:** Generates ELI5 intuition, top 5 high-probability viva exam questions, and 1-page condensed exam cheat sheets.
 
-### 4. 💳 Digital Student ID & Wallet Pass
+### 4. Digital Student ID & Wallet Pass
 * **Digital Pass Interface:** Apple Wallet / Google Wallet inspired student card displaying College ID, Roll Number, quick-copy actions, and scannable barcode/QR.
 
 ---
 
-## 🏗 System Architecture
+## System Architecture
 
 The following diagram illustrates how the Android native client, on-device vision, offline database, backend services, vector database, and Gemini AI interact:
 
@@ -88,7 +88,7 @@ flowchart TD
 
 ---
 
-## 🔄 Flowcharts & Workflows
+## Flowcharts & Workflows
 
 ### 1. Document Ingestion & Vision Quality Pipeline
 
@@ -99,13 +99,13 @@ flowchart TD
     Gray --> Lap["Calculate Laplacian Variance (σ²)"]
     Lap --> CheckBlur{"σ² >= 85.0?"}
     
-    CheckBlur -- "No (Blurry)" --> AlertBlur["⚠️ Rejection Warning: Retake with Steady Hands"]
+    CheckBlur -- "No (Blurry)" --> AlertBlur["Rejection Warning: Retake with Steady Hands"]
     AlertBlur --> Start
     
     CheckBlur -- "Yes (Sharp)" --> HashGen["Compute 64-bit dHash / pHash"]
     HashGen --> CheckDup{"Match Existing Hash?"}
     
-    CheckDup -- "Yes (>90% Sim)" --> PromptDup["⚠️ Duplicate Page Detected: Merge or Discard"]
+    CheckDup -- "Yes (>90% Sim)" --> PromptDup["Duplicate Page Detected: Merge or Discard"]
     CheckDup -- "No (Unique)" --> AutoTag["Match Current Day & Time against Timetable"]
     AutoTag --> StoreLocal["Save to Room SQLite Vault"]
     StoreLocal --> Sync["Async Sync to MinIO S3 & Generate Vector Embeddings"]
@@ -125,16 +125,16 @@ flowchart TD
     
     Notify --> ActionChoice{"User Action from Lock Screen"}
     
-    ActionChoice -- "✅ Yes, Attending" --> IncAttended["Attended + 1\nTotal + 1"]
-    ActionChoice -- "❌ No, Bunking" --> IncBunk["Attended + 0\nTotal + 1"]
-    ActionChoice -- "🚫 Class Cancelled" --> Skip["No Attendance Change"]
+    ActionChoice -- "Yes, Attending" --> IncAttended["Attended + 1\nTotal + 1"]
+    ActionChoice -- "No, Bunking" --> IncBunk["Attended + 0\nTotal + 1"]
+    ActionChoice -- "Class Cancelled" --> Skip["No Attendance Change"]
     
     IncAttended --> UpdateDB[("Update Room DB & Trigger State Re-render")]
     IncBunk --> UpdateDB
     Skip --> FinishNotification(["Dismiss Notification"])
     UpdateDB --> CheckRisk{"Percentage < 75%?"}
-    CheckRisk -- "Yes" --> ShowWarning["⚠️ Warning: Low Attendance! Recovery Classes Needed"]
-    CheckRisk -- "No" --> ShowSafe["✅ Status Safe: Within Bunk Horizon"]
+    CheckRisk -- "Yes" --> ShowWarning["Warning: Low Attendance! Recovery Classes Needed"]
+    CheckRisk -- "No" --> ShowSafe["Status Safe: Within Bunk Horizon"]
 ```
 
 ### 3. Clean Unicode Math & AI Exam Crammer
@@ -150,7 +150,7 @@ flowchart LR
 
 ---
 
-## 📐 Mathematical Formulas
+## Mathematical Formulas
 
 The Bunk Horizon engine uses strict deterministic boundary equations:
 
@@ -162,7 +162,7 @@ The Bunk Horizon engine uses strict deterministic boundary equations:
 
 ---
 
-## 💻 Tech Stack
+## Tech Stack
 
 | Domain | Technology / Tool | Purpose |
 | :--- | :--- | :--- |
@@ -180,7 +180,7 @@ The Bunk Horizon engine uses strict deterministic boundary equations:
 
 ---
 
-## 📂 Repository Structure
+## Repository Structure
 
 ```
 ENG-BUDDY/
@@ -206,7 +206,7 @@ ENG-BUDDY/
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Running the Android Application
 
@@ -249,7 +249,7 @@ curl http://localhost:8000/healthz
 
 ---
 
-## 🤝 Join the Project & Contribute!
+## Join the Project & Contribute!
 
 We are actively welcoming contributors! Whether you are an Android enthusiast, backend hacker, UI/UX designer, or an engineering student with feature ideas, we’d love to have you collaborate with us.
 
@@ -262,10 +262,10 @@ We are actively welcoming contributors! Whether you are an Android enthusiast, b
 
 ---
 
-## 📄 License
+## License
 
 Distributed under the **MIT License**. See `LICENSE` for more information.
 
 <div align="center">
-  <b>Built with ❤️ by engineering students, for engineering students.</b>
+  <b>Built by engineering students, for engineering students.</b>
 </div>

@@ -65,9 +65,9 @@ Instead of forcing the student to open the app every hour, the app uses backgrou
   * **Title:** `Thermodynamics (ME-204) is going on`
   * **Body:** `Should I mark your attendance for this class? (Current: 78% • Safe to bunk: 1)`
 * **Interactive Action Buttons (Directly inside the Android/iOS Notification):**
-  * `[ ✅ Yes, Attending ]` — Immediately increments `attended_classes + 1` and `total_classes + 1` in the background without opening the app.
-  * `[ ❌ No, Bunking ]` — Increments `total_classes + 1` (marks absent) and recalculates remaining safe bunks.
-  * `[ 🚫 Class Cancelled ]` — Ignores the slot so neither attended nor total classes increase.
+  * `[ Yes, Attending ]` — Immediately increments `attended_classes + 1` and `total_classes + 1` in the background without opening the app.
+  * `[ No, Bunking ]` — Increments `total_classes + 1` (marks absent) and recalculates remaining safe bunks.
+  * `[ Class Cancelled ]` — Ignores the slot so neither attended nor total classes increase.
 
 ### **C. The Bunk Math Engine**
 Display two crystal-clear pills on the Attendance Card:

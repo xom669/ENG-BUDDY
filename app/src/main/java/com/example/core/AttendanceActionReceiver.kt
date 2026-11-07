@@ -48,7 +48,7 @@ class AttendanceActionReceiver : BroadcastReceiver() {
                                     sessionType = "NOTIFICATION_PROMPT",
                                     status = "ATTENDED",
                                     classesCounted = weight,
-                                    note = "Marked [✅ Yes, Attending] from Push Notification"
+                                    note = "Marked [Yes, Attending] from Push Notification"
                                 )
                             )
                         }
@@ -65,7 +65,7 @@ class AttendanceActionReceiver : BroadcastReceiver() {
                                     sessionType = "NOTIFICATION_PROMPT",
                                     status = "MISSED",
                                     classesCounted = weight,
-                                    note = "Marked [❌ No, Bunking] from Push Notification"
+                                    note = "Marked [No, Bunking] from Push Notification"
                                 )
                             )
                         }
@@ -82,7 +82,7 @@ class AttendanceActionReceiver : BroadcastReceiver() {
                                     sessionType = "NOTIFICATION_PROMPT",
                                     status = "CLASS_CANCELLED",
                                     classesCounted = 0,
-                                    note = "Marked [🚫 Class Cancelled] — ignored in attendance denominator"
+                                    note = "Marked [Class Cancelled] — ignored in attendance denominator"
                                 )
                             )
                         }

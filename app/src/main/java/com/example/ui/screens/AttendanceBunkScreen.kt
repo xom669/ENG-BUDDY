@@ -328,14 +328,14 @@ fun AttendanceBunkScreen(
                         }
                     }
 
-                    // Direct Interactive Action Pills ([✅ Yes, Attending], [❌ No, Bunking], [🚫 Class Cancelled], [+Lab])
+                    // Direct Interactive Action Pills ([Yes, Attending], [No, Bunking], [Class Cancelled], [+Lab])
                     FlowRow(
                         horizontalArrangement = Arrangement.spacedBy(8.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         AssistChip(
                             onClick = { onLogAttendance(subj, "LECTURE", "ATTENDED") },
-                            label = { Text("✅ Yes, Attending") },
+                            label = { Text("Yes, Attending") },
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.AddCircleOutline,
@@ -348,7 +348,7 @@ fun AttendanceBunkScreen(
                         )
                         AssistChip(
                             onClick = { onLogAttendance(subj, "LECTURE", "MISSED") },
-                            label = { Text("❌ No, Bunking") },
+                            label = { Text("No, Bunking") },
                             leadingIcon = {
                                 Icon(
                                     Icons.Default.RemoveCircleOutline,
@@ -361,7 +361,7 @@ fun AttendanceBunkScreen(
                         )
                         AssistChip(
                             onClick = { onLogAttendance(subj, "LECTURE", "CLASS_CANCELLED") },
-                            label = { Text("🚫 Cancelled (${subj.cancelledClasses})") },
+                            label = { Text("Cancelled (${subj.cancelledClasses})") },
                             modifier = Modifier.testTag("cancel_lecture_${subj.code}")
                         )
                         AssistChip(

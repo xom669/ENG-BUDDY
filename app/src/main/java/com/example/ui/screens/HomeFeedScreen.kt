@@ -412,7 +412,7 @@ fun HomeFeedScreen(
                                 ),
                                 modifier = Modifier.testTag("notif_action_yes_attending")
                             ) {
-                                Text("✅ Yes, Attending", fontWeight = FontWeight.SemiBold)
+                                Text("Yes, Attending", fontWeight = FontWeight.SemiBold)
                             }
 
                             Button(
@@ -425,7 +425,7 @@ fun HomeFeedScreen(
                                 ),
                                 modifier = Modifier.testTag("notif_action_no_bunking")
                             ) {
-                                Text("❌ No, Bunking", fontWeight = FontWeight.SemiBold)
+                                Text("No, Bunking", fontWeight = FontWeight.SemiBold)
                             }
 
                             OutlinedButton(
@@ -434,7 +434,7 @@ fun HomeFeedScreen(
                                 },
                                 modifier = Modifier.testTag("notif_action_class_cancelled")
                             ) {
-                                Text("🚫 Class Cancelled")
+                                Text("Class Cancelled")
                             }
                         }
                     }

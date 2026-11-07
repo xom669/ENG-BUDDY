@@ -44,7 +44,7 @@ object AttendanceNotificationHelper {
 
     /**
      * Dispatches the interactive OS notification with three direct action buttons:
-     * [ ✅ Yes, Attending ]  [ ❌ No, Bunking ]  [ 🚫 Class Cancelled ]
+     * [ Yes, Attending ]  [ No, Bunking ]  [ Class Cancelled ]
      * Tapping any button updates the Room SQLite database in the background via AttendanceActionReceiver
      * without opening the app.
      */
@@ -111,9 +111,9 @@ object AttendanceNotificationHelper {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setContentIntent(contentPendingIntent)
             .setAutoCancel(true)
-            .addAction(0, "✅ Yes, Attending", attendingPendingIntent)
-            .addAction(0, "❌ No, Bunking", bunkingPendingIntent)
-            .addAction(0, "🚫 Class Cancelled", cancelledPendingIntent)
+            .addAction(0, "Yes, Attending", attendingPendingIntent)
+            .addAction(0, "No, Bunking", bunkingPendingIntent)
+            .addAction(0, "Class Cancelled", cancelledPendingIntent)
             .build()
 
         return try {

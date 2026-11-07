@@ -43,12 +43,12 @@ The repository contains both:
 
 | Component | Current State | What's Missing / Broken | Severity |
 | :--- | :--- | :--- | :--- |
-| **Build Configuration** | `app/build.gradle.kts` targets Android SDK 36. | `gradlew` and `gradlew.bat` are missing from root. `debugConfig` signing references missing `debug.keystore`. | 🔴 High |
-| **Camera & Scanner** | `CameraScannerScreen.kt` draws a simulated polygon on a Compose Canvas. | CameraX and Google ML Kit Document Scanner are commented out in `build.gradle.kts`. No real camera capture or hardware edge-detection. | 🔴 High |
-| **AI Integration** | `PlaceholderAiRepository` provides deterministic mock string responses. | Real Gemini API calls via `google-genai` SDK or backend proxy are not implemented. | 🔴 High |
-| **Timetable Notifications** | `AttendanceNotificationHelper` builds notifications; `AttendanceActionReceiver` updates Room. | No background scheduler (`WorkManager` or `AlarmManager`). Notifications can only be fired manually from UI. | 🟡 Medium |
-| **Local Persistence** | Comprehensive Room database with 9 entities and clean DAOs. | Migrations are not defined (`fallbackToDestructiveMigration` is used). Data can be wiped on schema change. | 🟡 Medium |
-| **On-Device Vision Pipeline** | `VisionQualityPipeline.kt` implements pure Kotlin Laplacian variance, pHash, dHash, and SSIM. | Good implementation! However, running software DCT and SSIM on large unscaled bitmaps on the UI thread will cause frame drops. Needs strict background dispatching and OpenCV NDK acceleration for large images. | 🟢 Low |
+| **Build Configuration** | `app/build.gradle.kts` targets Android SDK 36. | `gradlew` and `gradlew.bat` are missing from root. `debugConfig` signing references missing `debug.keystore`. | [High] |
+| **Camera & Scanner** | `CameraScannerScreen.kt` draws a simulated polygon on a Compose Canvas. | CameraX and Google ML Kit Document Scanner are commented out in `build.gradle.kts`. No real camera capture or hardware edge-detection. | [High] |
+| **AI Integration** | `PlaceholderAiRepository` provides deterministic mock string responses. | Real Gemini API calls via `google-genai` SDK or backend proxy are not implemented. | [High] |
+| **Timetable Notifications** | `AttendanceNotificationHelper` builds notifications; `AttendanceActionReceiver` updates Room. | No background scheduler (`WorkManager` or `AlarmManager`). Notifications can only be fired manually from UI. | [Medium] |
+| **Local Persistence** | Comprehensive Room database with 9 entities and clean DAOs. | Migrations are not defined (`fallbackToDestructiveMigration` is used). Data can be wiped on schema change. | [Medium] |
+| **On-Device Vision Pipeline** | `VisionQualityPipeline.kt` implements pure Kotlin Laplacian variance, pHash, dHash, and SSIM. | Good implementation! However, running software DCT and SSIM on large unscaled bitmaps on the UI thread will cause frame drops. Needs strict background dispatching and OpenCV NDK acceleration for large images. | [Low] |
 
 ---
 
@@ -56,11 +56,11 @@ The repository contains both:
 
 | Component | Current State | What's Missing / Broken | Severity |
 | :--- | :--- | :--- | :--- |
-| **API Endpoints** | Only `/healthz`, `/readyz`, and `/api/v1/attendance/...` exist. | No endpoints for note uploads, PDF generation, pgvector note chunking, RAG querying, or Google OAuth callbacks. | 🔴 High |
-| **Celery Worker** | `celery_app.py` has task signatures. | `process_note_batch_and_stitch_pdf` and `dispatch_timetable_attendance_prompt` return static dummy dictionaries. | 🔴 High |
-| **Database Migrations** | `0001_initial_pgvector.py` exists. | Missing `alembic.ini` and `env.py`. The migration omits the `oauth_connections` table defined in `models.py`. | 🔴 High |
-| **Token Encryption** | `settings.get_fernet()` in `config.py`. | **Security Flaw:** If `OAUTH_TOKEN_ENCRYPTION_KEY` is not set, it generates a new random key per call, making stored tokens un-decryptable across requests. | 🔴 High |
-| **Tests & Linting** | `ci.yml` expects `ruff`, `mypy`, and pytest. | Zero test files exist in `backend/tests/`. CI will pass with 0 tests. | 🟡 Medium |
+| **API Endpoints** | Only `/healthz`, `/readyz`, and `/api/v1/attendance/...` exist. | No endpoints for note uploads, PDF generation, pgvector note chunking, RAG querying, or Google OAuth callbacks. | [High] |
+| **Celery Worker** | `celery_app.py` has task signatures. | `process_note_batch_and_stitch_pdf` and `dispatch_timetable_attendance_prompt` return static dummy dictionaries. | [High] |
+| **Database Migrations** | `0001_initial_pgvector.py` exists. | Missing `alembic.ini` and `env.py`. The migration omits the `oauth_connections` table defined in `models.py`. | [High] |
+| **Token Encryption** | `settings.get_fernet()` in `config.py`. | **Security Flaw:** If `OAUTH_TOKEN_ENCRYPTION_KEY` is not set, it generates a new random key per call, making stored tokens un-decryptable across requests. | [High] |
+| **Tests & Linting** | `ci.yml` expects `ruff`, `mypy`, and pytest. | Zero test files exist in `backend/tests/`. CI will pass with 0 tests. | [Medium] |
 
 ---
 

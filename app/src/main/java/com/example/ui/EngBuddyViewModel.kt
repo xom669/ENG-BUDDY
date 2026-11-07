@@ -219,7 +219,7 @@ class EngBuddyViewModel(application: Application) : AndroidViewModel(application
             weightPoints = 1
         )
         _statusToast.value = if (posted) {
-            "Sent Push Notification: '${analysis.subject.name} (${analysis.subject.code}) is going on' with [✅ Yes] [❌ No] [🚫 Cancelled]"
+            "Sent Push Notification: '${analysis.subject.name} (${analysis.subject.code}) is going on' with [Yes] [No] [Cancelled]"
         } else {
             "Interactive prompt ready below (grant Notification permission for OS tray banner)"
         }
@@ -428,7 +428,7 @@ class EngBuddyViewModel(application: Application) : AndroidViewModel(application
                 phash = phash,
                 dhash = dhash,
                 ssimWithPrevious = 0.5,
-                duplicateDecisionLabel = if (isBlurry) "⚠️ Possible Blur Detected (Score: $sharpness)" else "Verified Sharp Capture (Score: $sharpness)",
+                duplicateDecisionLabel = if (isBlurry) "Possible Blur Detected (Score: $sharpness)" else "Verified Sharp Capture (Score: $sharpness)",
                 isSentToTrash = false,
                 isPossibleDuplicate = false
             )
@@ -518,9 +518,9 @@ class EngBuddyViewModel(application: Application) : AndroidViewModel(application
         viewModelScope.launch {
             repository.recordAttendance(subject, sessionType, status)
             val statusLabel = when (status) {
-                "ATTENDED" -> "✅ Yes, Attending (+1)"
-                "MISSED" -> "❌ No, Bunking"
-                "CLASS_CANCELLED" -> "🚫 Class Cancelled (Ignored)"
+                "ATTENDED" -> "Yes, Attending (+1)"
+                "MISSED" -> "No, Bunking"
+                "CLASS_CANCELLED" -> "Class Cancelled (Ignored)"
                 else -> status
             }
             _statusToast.value = "${subject.code}: $statusLabel"
