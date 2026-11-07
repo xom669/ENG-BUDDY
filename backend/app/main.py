@@ -10,6 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from app.core.config import settings
+from app.core.prompts import build_note_scanner_prompt
 
 app = FastAPI(
     title="EngBuddy v2.0 API",
@@ -233,13 +234,17 @@ async def explain_notes_ai(
     excerpts_text = "\n\n".join(payload.note_excerpts) if payload.note_excerpts else "No note excerpts provided."
 
     if api_key and not api_key.startswith("CHANGE_ME") and not api_key.startswith("YOUR_"):
+        system_rules = build_note_scanner_prompt(
+            subject_name=payload.subject_code or "General Engineering",
+            render_mode="CLEAN_UNICODE"
+        )
         prompt = (
-            f"You are EngBuddy, an expert engineering student AI tutor.\n"
+            f"{system_rules}\n\n"
             f"Subject: {payload.subject_code or 'Engineering'}\n"
             f"Mode: {payload.mode}\n"
-            f"Question: {payload.query}\n\n"
+            f"Question / Query: {payload.query}\n\n"
             f"Student Scanned Note Excerpts:\n{excerpts_text}\n\n"
-            f"Provide a structured, accurate explanation in markdown."
+            f"Provide a structured, accurate explanation in clean markdown adhering strictly to the Unicode math formatting rules."
         )
         try:
             async with httpx.AsyncClient(timeout=30.0) as client:
