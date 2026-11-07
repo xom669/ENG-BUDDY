@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EngBuddy - The Ultimate Engineering Student Companion</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: rgba(22, 29, 47, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-blue: #3b82f6;
+      --accent-cyan: #06b6d4;
+      --accent-green: #10b981;
+      --accent-red: #ef4444;
+      --accent-yellow: #f59e0b;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: var(--font-sans);
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(circle at 15% 20%, rgba(59, 130, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 80%, rgba(6, 182, 212, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Navigation */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 24px 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #60a5fa, #22d3ee);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      margin-left: 24px;
+      transition: color 0.2s;
+    }
+
+    .nav-links a:hover {
+      color: #fff;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 80px 0 60px;
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      background: rgba(59, 130, 246, 0.15);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      color: #93c5fd;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .hero p {
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 720px;
+      margin: 0 auto 36px;
+    }
+
+    .btn-group {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 12px 26px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #2563eb, #0284c7);
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+      border: none;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      color: #e2e8f0;
+      border: 1px solid var(--card-border);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Grid Sections */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin: 40px 0;
+    }
+
+    .card {
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #fff;
+    }
+
+    .card p {
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    /* Calculator Widget */
+    .calculator-section {
+      background: linear-gradient(180deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.8));
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 36px;
+      margin: 60px 0;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .calculator-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .calculator-subtitle {
+      color: var(--text-muted);
+      margin-bottom: 28px;
+      font-size: 0.95rem;
+    }
+
+    .calculator-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    @media (max-width: 768px) {
+      .calculator-grid {
+        grid-template-columns: 1fr;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+    }
+
+    .input-group {
+      margin-bottom: 18px;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .input-control {
+      width: 100%;
+      padding: 12px 16px;
+      background: rgba(15, 23, 42, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px;
+      color: #fff;
+      font-family: var(--font-mono);
+      font-size: 1rem;
+      transition: border-color 0.2s;
+    }
+
+    .input-control:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+    }
+
+    .calc-results {
+      background: rgba(11, 15, 25, 0.8);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+    }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .stat-value {
+      font-family: var(--font-mono);
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .stat-pill {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .pill-safe {
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-green);
+    }
+
+    .pill-danger {
+      background: rgba(239, 68, 68, 0.15);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: var(--accent-red);
+    }
+
+    /* Math Preview */
+    .math-box {
+      background: rgba(15, 23, 42, 0.7);
+      border: 1px solid var(--card-border);
+      border-radius: 10px;
+      padding: 16px;
+      font-family: var(--font-mono);
+      color: #93c5fd;
+      margin-top: 12px;
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* Footer */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 40px 0;
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    footer a {
+      color: #93c5fd;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <nav>
+      <div class="logo">EngBuddy (v2.0)</div>
+      <div class="nav-links">
+        <a href="#calculator">Bunk Calculator</a>
+        <a href="#features">Features</a>
+        <a href="https://github.com/xom669/ENG-BUDDY">GitHub Repository</a>
+        <a href="https://github.com/xom669/ENG-BUDDY/releases/tag/v1.0.0">Release Notes</a>
+      </div>
+    </nav>
+
+    <header class="hero">
+      <div class="badge">Open Source Engineering Platform</div>
+      <h1>The Ultimate Engineering Student Companion</h1>
+      <p>
+        Offline-first Android application designed for engineering students: intelligent note scanning with blur filtering, deterministic 75% attendance bunk calculus, and Gemini 2.5 Flash Clean Unicode Math.
+      </p>
+      <div class="btn-group">
+        <a href="https://github.com/xom669/ENG-BUDDY/releases/download/v1.0.0/app-debug.apk" class="btn btn-primary">
+          Download Android APK (v1.0.0)
+        </a>
+        <a href="https://github.com/xom669/ENG-BUDDY" class="btn btn-secondary">
+          View on GitHub
+        </a>
+      </div>
+    </header>
+
+    <!-- Interactive Attendance Bunk Horizon Widget -->
+    <section id="calculator" class="calculator-section">
+      <h2 class="calculator-title">Interactive Bunk Horizon Calculator</h2>
+      <p class="calculator-subtitle">
+        Test the mathematical model running inside EngBuddy's on-device domain engine. Enter your current classes below:
+      </p>
+
+      <div class="calculator-grid">
+        <div class="calc-inputs">
+          <div class="input-group">
+            <label for="attended">Classes Attended</label>
+            <input type="number" id="attended" class="input-control" value="26" min="0">
+          </div>
+          <div class="input-group">
+            <label for="total">Total Classes Conducted</label>
+            <input type="number" id="total" class="input-control" value="32" min="1">
+          </div>
+          <div class="input-group">
+            <label for="cutoff">Required Attendance Cutoff (%)</label>
+            <input type="number" id="cutoff" class="input-control" value="75" min="1" max="100">
+          </div>
+        </div>
+
+        <div class="calc-results">
+          <div class="stat-row">
+            <span class="stat-label">Current Attendance</span>
+            <span class="stat-value" id="current-pct">81.2%</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Safe Bunk Margin</span>
+            <span class="stat-value" id="safe-bunks" style="color: var(--accent-green);">2 Classes</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-label">Recovery Classes Needed</span>
+            <span class="stat-value" id="classes-needed" style="color: var(--text-muted);">0</span>
+          </div>
+          <div class="stat-pill pill-safe" id="status-pill">
+            Safe: Attendance is above cutoff threshold
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Core Features Grid -->
+    <section id="features" class="grid">
+      <div class="card">
+        <h3>1. Smart Note Vault & Computer Vision</h3>
+        <p>
+          On-device Laplacian variance computation (threshold = 85.0) filters blurry classroom photos before storage. 64-bit dHash, pHash, and SSIM avoid duplicates. Timetable priors automatically file notes under their corresponding subject.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>2. Lock-Screen Attendance Logging</h3>
+        <p>
+          Powered by Android WorkManager. Periodic background workers dispatch interactive notification action buttons ([Yes, Attending], [No, Bunking], [Class Cancelled]) updating Room SQLite without opening the app.
+        </p>
+      </div>
+
+      <div class="card">
+        <h3>3. Clean Unicode Math AI</h3>
+        <p>
+          Eliminates raw unrendered LaTeX backslash clutter. Powered by Gemini 2.5 Flash, generating clean mathematical symbols for instant readability during quick exam revisions:
+        </p>
+        <div class="math-box">
+          η = 1 - (T_L / T_H)<br>
+          ∮ E · dA = Q_enclosed / ε₀<br>
+          ∂²u/∂t² = c² (∂²u/∂x² + ∂²u/∂y²)
+        </div>
+      </div>
+    </section>
+
+    <!-- Quick Technical Specifications -->
+    <section class="card" style="margin-bottom: 60px;">
+      <h3>System Architecture & Tech Stack</h3>
+      <p style="margin-bottom: 16px;">
+        EngBuddy combines modern mobile and cloud technologies into an offline-first architecture:
+      </p>
+      <ul style="padding-left: 20px; color: var(--text-muted); line-height: 1.8;">
+        <li><strong style="color: #fff;">Native Android Client:</strong> Kotlin 2.0, Jetpack Compose Material 3, Room SQLite, WorkManager, Retrofit 2 + Moshi.</li>
+        <li><strong style="color: #fff;">Backend Cloud Services:</strong> Python 3.12, FastAPI, SQLAlchemy 2 (AsyncIO), Celery worker pool, Redis 7 message broker.</li>
+        <li><strong style="color: #fff;">Storage & Retrieval:</strong> PostgreSQL 16 with pgvector extension (HNSW vector similarity indexing for RAG) and MinIO S3 object store.</li>
+        <li><strong style="color: #fff;">Generative AI:</strong> Google Gemini 2.5 Flash API with strict formatting system prompts.</li>
+      </ul>
+    </section>
+
+    <footer>
+      <p>EngBuddy (v2.0) — Open Source Engineering Student Platform</p>
+      <p style="margin-top: 6px;">
+        <a href="https://github.com/xom669/ENG-BUDDY">GitHub Repository</a> • 
+        <a href="https://github.com/xom669/ENG-BUDDY/releases">Releases</a> • 
+        Licensed under MIT
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    function updateBunkCalculations() {
+      const attended = Math.max(0, parseFloat(document.getElementById('attended').value) || 0);
+      const total = Math.max(1, parseFloat(document.getElementById('total').value) || 1);
+      const cutoffPct = Math.min(100, Math.max(1, parseFloat(document.getElementById('cutoff').value) || 75));
+      const cutoff = cutoffPct / 100.0;
+
+      const currentPct = (attended / total) * 100.0;
+      document.getElementById('current-pct').textContent = currentPct.toFixed(1) + '%';
+
+      const statusPill = document.getElementById('status-pill');
+      const safeBunksEl = document.getElementById('safe-bunks');
+      const classesNeededEl = document.getElementById('classes-needed');
+
+      if (currentPct >= cutoffPct) {
+        const safeBunks = Math.floor((attended - (cutoff * total)) / cutoff);
+        safeBunksEl.textContent = safeBunks + ' Classes';
+        safeBunksEl.style.color = 'var(--accent-green)';
+        classesNeededEl.textContent = '0';
+        classesNeededEl.style.color = 'var(--text-muted)';
+
+        statusPill.className = 'stat-pill pill-safe';
+        statusPill.textContent = 'Safe: You can skip ' + safeBunks + ' class' + (safeBunks === 1 ? '' : 'es') + ' and stay above ' + cutoffPct + '%';
+      } else {
+        const needed = Math.ceil(((cutoff * total) - attended) / (1.0 - cutoff));
+        safeBunksEl.textContent = '0';
+        safeBunksEl.style.color = 'var(--text-muted)';
+        classesNeededEl.textContent = needed + ' Classes';
+        classesNeededEl.style.color = 'var(--accent-red)';
+
+        statusPill.className = 'stat-pill pill-danger';
+        statusPill.textContent = 'Warning: You must attend the next ' + needed + ' consecutive classes to reach ' + cutoffPct + '%';
+      }
+    }
+
+    document.getElementById('attended').addEventListener('input', updateBunkCalculations);
+    document.getElementById('total').addEventListener('input', updateBunkCalculations);
+    document.getElementById('cutoff').addEventListener('input', updateBunkCalculations);
+    updateBunkCalculations();
+  </script>
+</body>
+</html>
