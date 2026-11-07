@@ -30,6 +30,10 @@ class TimetableCheckWorker(
             val database = EngBuddyDatabase.getInstance(applicationContext)
             val dao = database.dao()
 
+            // Keep exact AlarmManager schedules fresh for all timetable slots (immune to Doze mode)
+            val allSlots = dao.getTimetableSlotsOnce()
+            TimetableAlarmScheduler.scheduleAllSlotsForWeek(applicationContext, allSlots)
+
             val calendar = Calendar.getInstance()
             // Calendar.DAY_OF_WEEK: Sunday=1, Monday=2 .. Saturday=7
             // Convert to 1 = Monday .. 7 = Sunday to match TimetableSlotEntity

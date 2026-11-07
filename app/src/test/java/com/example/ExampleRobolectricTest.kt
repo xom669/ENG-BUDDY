@@ -49,4 +49,32 @@ class ExampleRobolectricTest {
         )
         assertTrue(second.cachedHit)
     }
+
+    @Test
+    fun liveGeminiAiRepository_gracefullyFallsBackWhenNoKey() = runTest {
+        val repo = com.example.data.remote.LiveGeminiAiRepository(apiKeyProvider = { null })
+        val pages = listOf(
+            DocumentPageEntity(
+                id = 1L,
+                documentId = 10L,
+                pageNumber = 2,
+                detectedHeading = "Carnot Cycle Efficiency",
+                ocrText = "Thermal efficiency η = 1 - T_L/T_H for reversible Carnot heat engine.",
+                laplacianSharpness = 180.0,
+                phash = "A4F19C3B82D011E4",
+                dhash = "9C31A8F042E1B305",
+                ssimScore = 0.20,
+                duplicateFlag = "NONE",
+                confidence = 0.96
+            )
+        )
+        val res = repo.explainNotesWithRag(
+            query = "Explain Carnot efficiency",
+            mode = ExplainMode.ELI5,
+            selectedSubject = null,
+            availablePages = pages
+        )
+        assertTrue(res.markdownAnswer.isNotBlank())
+        assertEquals("Local Note-Grounded (Offline Fallback)", res.modelLabel)
+    }
 }

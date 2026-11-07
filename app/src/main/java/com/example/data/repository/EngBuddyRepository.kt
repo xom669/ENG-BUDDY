@@ -758,10 +758,37 @@ class EngBuddyRepository(
     suspend fun ingestSharedFile(
         fileName: String,
         mimeType: String,
-        sourceChannel: String = "WHATSAPP_SHARE"
+        sourceChannel: String = "WHATSAPP_SHARE",
+        contentUri: android.net.Uri? = null
     ) {
         val subjectsList = dao.getSubjectsOnce()
         val targetSubject = subjectsList.firstOrNull()
+
+        var localFilePath = ""
+        var extractedText = "Shared engineering document ($fileName) imported via $sourceChannel. Contains formulas, numerical derivations, and lab reference tables."
+
+        if (contentUri != null) {
+            try {
+                val input = context.contentResolver.openInputStream(contentUri)
+                if (input != null) {
+                    val docsDir = java.io.File(context.filesDir, "vault_docs").apply { mkdirs() }
+                    val sanitizedName = fileName.replace(Regex("[^a-zA-Z0-9._-]"), "_")
+                    val targetFile = java.io.File(docsDir, "${System.currentTimeMillis()}_$sanitizedName")
+                    targetFile.outputStream().use { out -> input.copyTo(out) }
+                    localFilePath = targetFile.absolutePath
+
+                    if (mimeType.startsWith("text/") || fileName.endsWith(".txt") || fileName.endsWith(".md")) {
+                        val text = targetFile.readText(Charsets.UTF_8).take(2000)
+                        if (text.isNotBlank()) extractedText = text
+                    } else {
+                        extractedText = "Imported document ($fileName, ${targetFile.length()} bytes) via $sourceChannel."
+                    }
+                }
+            } catch (e: Exception) {
+                // Fall back gracefully to metadata
+            }
+        }
+
         val docId = dao.insertVaultDocument(
             VaultDocumentEntity(
                 subjectId = targetSubject?.id,
@@ -772,7 +799,8 @@ class EngBuddyRepository(
                 pageCount = 1,
                 orderingConfidence = 0.95,
                 status = "READY",
-                summaryText = "Ingested via native OS Share Target ($mimeType). Indexed for offline search & RAG."
+                summaryText = "Ingested via native OS Share Target ($mimeType). Indexed for offline search & RAG.",
+                pdfPath = localFilePath
             )
         )
         dao.insertDocumentPage(
@@ -780,7 +808,7 @@ class EngBuddyRepository(
                 documentId = docId,
                 pageNumber = 1,
                 detectedHeading = fileName.substringBeforeLast("."),
-                ocrText = "Shared engineering document ($fileName) imported via $sourceChannel. Contains formulas, numerical derivations, and lab reference tables.",
+                ocrText = extractedText,
                 laplacianSharpness = 190.0,
                 phash = "55AA33CC99FF1100",
                 dhash = "449922BB88EE00FF",

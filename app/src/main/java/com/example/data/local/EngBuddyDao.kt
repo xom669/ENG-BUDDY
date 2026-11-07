@@ -46,6 +46,9 @@ interface EngBuddyDao {
     @Query("SELECT * FROM timetable_slots ORDER BY dayOfWeek ASC, startTimeMinutes ASC")
     fun observeTimetableSlots(): Flow<List<TimetableSlotEntity>>
 
+    @Query("SELECT * FROM timetable_slots ORDER BY dayOfWeek ASC, startTimeMinutes ASC")
+    suspend fun getTimetableSlotsOnce(): List<TimetableSlotEntity>
+
     @Query("SELECT * FROM timetable_slots WHERE dayOfWeek = :dayOfWeek AND :minuteOfDay BETWEEN startTimeMinutes AND endTimeMinutes LIMIT 1")
     suspend fun getActiveSlotForTime(dayOfWeek: Int, minuteOfDay: Int): TimetableSlotEntity?
 

@@ -60,19 +60,26 @@ class Settings(BaseSettings):
         "https://app.engbuddy.io",
     ]
 
-    _cached_fernet: Optional[Fernet] = None
+    _cached_fernet: Fernet | None = None
 
     def get_fernet(self) -> Fernet:
         if self._cached_fernet is not None:
             return self._cached_fernet
-        key = self.oauth_token_encryption_key
+        key = self.oauth_token_encryption_key.strip() if self.oauth_token_encryption_key else ""
         if not key or key.startswith("CHANGE_ME"):
-            # Stable 32-byte url-safe base64 dev fallback
-            key = "ZGF1bHRfZGV2X2tleV9mb3JfZW5nYnVkZHlfMTIzNA=="
+            if self.environment == "production":
+                raise ValueError(
+                    "OAUTH_TOKEN_ENCRYPTION_KEY must be configured with a 32-byte url-safe base64 key in production"
+                )
+            # Deterministic dev fallback key (32 bytes url-safe base64) to prevent data loss across restarts
+            key = "ZGV2X2tleV9mb3JfZW5nYnVkZHlfYXBwXzMyYnl0ZXM="
         try:
             self._cached_fernet = Fernet(key.encode("utf-8"))
-        except Exception:
-            self._cached_fernet = Fernet(Fernet.generate_key())
+        except Exception as e:
+            if self.environment == "production":
+                raise ValueError(f"Invalid OAUTH_TOKEN_ENCRYPTION_KEY: {e}") from e
+            # Deterministic valid fallback key for development
+            self._cached_fernet = Fernet(b"ZGV2X2tleV9mb3JfZW5nYnVkZHlfYXBwXzMyYnl0ZXM=")
         return self._cached_fernet
 
 

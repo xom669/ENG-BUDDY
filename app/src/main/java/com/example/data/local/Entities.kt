@@ -1,6 +1,7 @@
 package com.example.data.local
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
@@ -59,7 +60,15 @@ data class SubjectEntity(
 
 @Entity(
     tableName = "timetable_slots",
-    indices = [Index(value = ["dayOfWeek", "startTimeMinutes"])]
+    indices = [Index(value = ["dayOfWeek", "startTimeMinutes"]), Index(value = ["subjectId"])],
+    foreignKeys = [
+        ForeignKey(
+            entity = SubjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["subjectId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class TimetableSlotEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -76,7 +85,15 @@ data class TimetableSlotEntity(
 
 @Entity(
     tableName = "vault_documents",
-    indices = [Index(value = ["subjectId"]), Index(value = ["status"]), Index(value = ["trashedAt"])]
+    indices = [Index(value = ["subjectId"]), Index(value = ["status"]), Index(value = ["trashedAt"])],
+    foreignKeys = [
+        ForeignKey(
+            entity = SubjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["subjectId"],
+            onDelete = ForeignKey.SET_NULL
+        )
+    ]
 )
 data class VaultDocumentEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -96,7 +113,15 @@ data class VaultDocumentEntity(
 
 @Entity(
     tableName = "document_pages",
-    indices = [Index(value = ["documentId"]), Index(value = ["phash"])]
+    indices = [Index(value = ["documentId"]), Index(value = ["phash"])],
+    foreignKeys = [
+        ForeignKey(
+            entity = VaultDocumentEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["documentId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class DocumentPageEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
@@ -115,7 +140,15 @@ data class DocumentPageEntity(
 
 @Entity(
     tableName = "attendance_logs",
-    indices = [Index(value = ["subjectId", "timestamp"])]
+    indices = [Index(value = ["subjectId", "timestamp"])],
+    foreignKeys = [
+        ForeignKey(
+            entity = SubjectEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["subjectId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
 )
 data class AttendanceLogEntity(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,

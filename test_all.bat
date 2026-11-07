@@ -4,8 +4,8 @@ echo Running EngBuddy Complete Test Suite
 echo ===================================================
 
 echo.
-echo [1/2] Running Native Android Robolectric & Math Tests...
-call .\gradlew.bat :app:testDebugUnitTest --no-daemon
+echo [1/2] Running Native Android Robolectric and Math Tests...
+call .\gradlew.bat :app:testDebugUnitTest --no-daemon "-Dorg.gradle.parallel=false"
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Android unit tests failed!
     pause
@@ -26,4 +26,8 @@ echo.
 echo ===================================================
 echo [SUCCESS] All Android and Backend tests PASSED!
 echo ===================================================
-pause
+if "%CI%"=="" (
+    rem In interactive shells, wait 2 seconds before closing; do not hang if redirected
+    timeout /t 2 /nobreak >nul 2>&1
+)
+exit /b 0

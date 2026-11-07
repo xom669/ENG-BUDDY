@@ -120,11 +120,13 @@ class MainActivity : ComponentActivity() {
                 @Suppress("DEPRECATION")
                 val uri = intent.getParcelableExtra<Uri>(Intent.EXTRA_STREAM)
                 val label = uri?.lastPathSegment ?: "WhatsApp_Shared_Note_${System.currentTimeMillis() % 1000}.pdf"
-                viewModel.handleIncomingShareIntent(label, mime)
+                viewModel.handleIncomingShareIntent(label, mime, uri)
             }
             Intent.ACTION_SEND_MULTIPLE -> {
                 val mime = intent.type ?: "image/*"
-                viewModel.handleIncomingShareIntent("WhatsApp_Batch_Shared_Notes.pdf", mime)
+                @Suppress("DEPRECATION")
+                val uris = intent.getParcelableArrayListExtra<Uri>(Intent.EXTRA_STREAM)
+                viewModel.handleIncomingShareIntent("WhatsApp_Batch_Shared_Notes.pdf", mime, uris?.firstOrNull())
             }
         }
     }

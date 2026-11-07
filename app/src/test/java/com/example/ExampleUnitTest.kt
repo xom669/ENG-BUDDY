@@ -109,4 +109,65 @@ class ExampleUnitTest {
         )
         assertEquals(DuplicateDecision.POSSIBLE_DUPLICATE_KEEP_BOTH_FLAGGED, eval.decision)
     }
+
+    @Test
+    fun attendanceCalculator_ceilRoundingNeverContradictsThresholdStatus() {
+        val subject = SubjectEntity(
+            id = 5L,
+            code = "CS-401",
+            name = "Advanced Algorithms",
+            professorName = "Dr. Rao",
+            targetPercentage = 75.0,
+            roundingMode = "CEIL",
+            attendedClasses = 7495,
+            totalClasses = 10000
+        )
+        val analysis = AttendanceCalculator.analyze(subject)
+        assertTrue(analysis.isAboveThreshold)
+        assertEquals(0, analysis.mustAttendClasses)
+        assertFalse(analysis.statusBadge.contains("ATTEND +"))
+    }
+
+    @Test
+    fun attendanceCalculator_zeroTotalClassesHandledGracefully() {
+        val subject = SubjectEntity(
+            id = 6L,
+            code = "NEW-101",
+            name = "Intro to Quantum Computing",
+            professorName = "Dr. Bose",
+            targetPercentage = 75.0,
+            attendedClasses = 0,
+            totalClasses = 0
+        )
+        val analysis = AttendanceCalculator.analyze(subject)
+        assertEquals(0, analysis.mustAttendClasses)
+        assertEquals(0, analysis.safeToSkipClasses)
+        assertEquals("NO CLASSES RECORDED", analysis.statusBadge)
+        assertTrue(analysis.liquidPillCopy.contains("No classes recorded yet"))
+    }
+
+    @Test
+    fun attendanceCalculator_highTargetPercentageHandledWithoutDivisionByZero() {
+        val subject = SubjectEntity(
+            id = 7L,
+            code = "AI-501",
+            name = "Deep Learning",
+            professorName = "Prof. LeCun",
+            targetPercentage = 100.0,
+            attendedClasses = 10,
+            totalClasses = 10
+        )
+        val analysis = AttendanceCalculator.analyze(subject)
+        assertTrue(analysis.isAboveThreshold)
+        assertEquals(0, analysis.mustAttendClasses)
+    }
+
+    @Test
+    fun timetableAlarmScheduler_computesFutureTriggerTimeCorrectly() {
+        val triggerTime = com.example.core.TimetableAlarmScheduler.computeNextTriggerTime(
+            targetDayOfWeek = 3, // Wednesday
+            startTimeMinutes = 10 * 60 + 10 // 10:10 AM
+        )
+        assertTrue(triggerTime > 0)
+    }
 }

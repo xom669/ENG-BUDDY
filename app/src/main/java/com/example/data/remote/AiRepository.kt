@@ -335,7 +335,8 @@ class LiveGeminiAiRepository(
     ): AiExplainerResponse = withContext(Dispatchers.IO) {
         val apiKey = apiKeyProvider()?.trim()
         if (apiKey.isNullOrBlank() || apiKey.startsWith("YOUR_") || apiKey.startsWith("CHANGE_ME")) {
-            return@withContext fallbackRepo.explainNotesWithRag(query, mode, selectedSubject, availablePages)
+            val fallback = fallbackRepo.explainNotesWithRag(query, mode, selectedSubject, availablePages)
+            return@withContext fallback.copy(modelLabel = "Local Note-Grounded (Offline Fallback)")
         }
 
         // 1. Retrieve top matching local note chunks (Local RAG)

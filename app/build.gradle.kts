@@ -72,9 +72,18 @@ android {
 }
 
 secrets {
-  propertiesFileName = ".env"
-  defaultPropertiesFileName = ".env.example"
+  propertiesFileName = "secrets.properties"
+  defaultPropertiesFileName = "secrets.defaults.properties"
   ignoreList.add("FIREBASE_APPCHECK_DEBUG_TOKEN")
+  ignoreList.add("POSTGRES_DSN")
+  ignoreList.add("JWT_SECRET_KEY")
+  ignoreList.add("OAUTH_TOKEN_ENCRYPTION_KEY")
+  ignoreList.add("S3_SECRET_ACCESS_KEY")
+  ignoreList.add("S3_ACCESS_KEY_ID")
+  ignoreList.add("WHATSAPP_ACCESS_TOKEN")
+  ignoreList.add("WHATSAPP_VERIFY_TOKEN")
+  ignoreList.add("GOOGLE_OAUTH_CLIENT_SECRET")
+  ignoreList.add("REDIS_URL")
 }
 
 googleServices { missingGoogleServicesStrategy = MissingGoogleServicesStrategy.WARN }

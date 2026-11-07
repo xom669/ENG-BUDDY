@@ -598,9 +598,9 @@ class EngBuddyViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
-    fun handleIncomingShareIntent(fileName: String, mimeType: String) {
+    fun handleIncomingShareIntent(fileName: String, mimeType: String, contentUri: android.net.Uri? = null) {
         viewModelScope.launch {
-            repository.ingestSharedFile(fileName, mimeType, "WHATSAPP_SHARE")
+            repository.ingestSharedFile(fileName, mimeType, "WHATSAPP_SHARE", contentUri)
             _statusToast.value = "Shared file '$fileName' ingested into Smart Vault!"
         }
     }

@@ -52,21 +52,22 @@ object AttendanceCalculator {
             else -> (rawPct * 10.0).roundToInt() / 10.0
         }
 
-        val targetRatio = (subject.targetPercentage.coerceIn(1.0, 99.9)) / 100.0
+        val targetRatio = (subject.targetPercentage.coerceIn(0.1, 99.99)) / 100.0
+        val isSafe = roundedPct >= subject.targetPercentage
 
         // Spec Formula C.2: If Attendance < Target (T):
         // Classes Needed = ceil(((T * Total) - Attended) / (1 - T))
-        val mustAttend = if (effectiveTotal == 0 || rawPct >= subject.targetPercentage) {
+        val mustAttend = if (effectiveTotal == 0 || isSafe) {
             0
         } else {
             val numerator = (targetRatio * effectiveTotal) - effectiveAttended
-            val denominator = 1.0 - targetRatio
-            max(0, ceil(numerator / denominator - 1e-9).toInt())
+            val denominator = max(0.0001, 1.0 - targetRatio)
+            max(1, ceil(numerator / denominator - 1e-9).toInt())
         }
 
         // Spec Formula C.1: If Attendance >= Target (T):
         // Safe Bunks = floor((Attended - (T * Total)) / T)
-        val safeToSkip = if (effectiveTotal == 0 || rawPct < subject.targetPercentage) {
+        val safeToSkip = if (effectiveTotal == 0 || !isSafe) {
             0
         } else {
             val safe = floor(((effectiveAttended - (targetRatio * effectiveTotal)) / targetRatio) + 1e-9).toInt()
@@ -75,7 +76,6 @@ object AttendanceCalculator {
 
         val labWeight = max(1, subject.labWeightClasses)
         val safeLabs = safeToSkip / labWeight
-        val isSafe = roundedPct >= subject.targetPercentage
 
         val zone = when {
             !isSafe -> AttendanceZone.DANGER_RED
@@ -84,13 +84,16 @@ object AttendanceCalculator {
         }
 
         val targetInt = subject.targetPercentage.toInt()
-        val liquidCopy = if (isSafe) {
+        val liquidCopy = if (effectiveTotal == 0) {
+            "No classes recorded yet. Target is $targetInt%."
+        } else if (isSafe) {
             "You can skip the next $safeToSkip class${if (safeToSkip == 1) "" else "es"} and still stay at $targetInt%."
         } else {
             "Attend the next $mustAttend class${if (mustAttend == 1) "" else "es"} straight to recover to $targetInt%."
         }
 
         val badge = when {
+            effectiveTotal == 0 -> "NO CLASSES RECORDED"
             subject.isOptionalElective -> "OPTIONAL ELECTIVE (EXCLUDED)"
             mustAttend > 0 -> "ATTEND +$mustAttend STRAIGHT"
             safeToSkip > 0 -> "+$safeToSkip BUNKS LEFT"

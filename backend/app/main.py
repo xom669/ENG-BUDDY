@@ -32,7 +32,7 @@ class AttendanceCalcRequest(BaseModel):
     total_classes: int = Field(ge=0)
     medical_excused_classes: int = Field(default=0, ge=0)
     tutorial_bonus_points: int = Field(default=0, ge=0)
-    target_pct: float = Field(default=75.0, ge=60.0, le=90.0)
+    target_pct: float = Field(default=75.0, ge=0.0, le=100.0)
     lab_weight_classes: int = Field(default=2, ge=1, le=6)
     medical_leave_excused: bool = True
     is_optional_elective: bool = False
@@ -57,7 +57,7 @@ class NotificationActionRequest(BaseModel):
     attended_classes: int = Field(ge=0)
     total_classes: int = Field(ge=0)
     weight_points: int = Field(default=1, ge=1, le=4)
-    target_pct: float = Field(default=75.0, ge=60.0, le=90.0)
+    target_pct: float = Field(default=75.0, ge=0.0, le=100.0)
 
 
 class StudentPassPayload(BaseModel):
@@ -104,16 +104,18 @@ async def calculate_bunk_stats(payload: AttendanceCalcRequest) -> AttendanceCalc
     else:
         pct = round(raw_pct, 1)
 
-    target_ratio = payload.target_pct / 100.0
-    if eff_total == 0 or raw_pct >= payload.target_pct:
+    is_safe = pct >= payload.target_pct
+    target_ratio = min(0.9999, max(0.001, payload.target_pct / 100.0))
+
+    if eff_total == 0 or is_safe:
         must_attend = 0
     else:
         must_attend = max(
-            0,
+            1,
             math.ceil(((target_ratio * eff_total) - eff_attended) / (1.0 - target_ratio) - 1e-9),
         )
 
-    if eff_total == 0 or raw_pct < payload.target_pct:
+    if eff_total == 0 or not is_safe:
         safe_to_skip = 0
     else:
         safe_to_skip = max(
@@ -121,7 +123,6 @@ async def calculate_bunk_stats(payload: AttendanceCalcRequest) -> AttendanceCalc
             math.floor(((eff_attended - (target_ratio * eff_total)) / target_ratio) + 1e-9),
         )
 
-    is_safe = pct >= payload.target_pct
     if not is_safe:
         zone: Literal["SAFE_GREEN", "WARNING_YELLOW", "DANGER_RED"] = "DANGER_RED"
     elif pct <= payload.target_pct + 3.0:
@@ -130,7 +131,9 @@ async def calculate_bunk_stats(payload: AttendanceCalcRequest) -> AttendanceCalc
         zone = "SAFE_GREEN"
 
     tgt_int = int(payload.target_pct)
-    if is_safe:
+    if eff_total == 0:
+        copy = f"No classes recorded yet. Target is {tgt_int}%."
+    elif is_safe:
         copy = f"You can skip the next {safe_to_skip} classes and still stay at {tgt_int}%."
     else:
         copy = f"Attend the next {must_attend} classes straight to recover to {tgt_int}%."
@@ -295,8 +298,32 @@ async def explain_notes_ai(
     )
 
 
+@app.get(f"{settings.api_v1_prefix}/integrations/google/authorize")
+async def google_oauth_authorize(response: Response) -> dict[str, str]:
+    state = uuid.uuid4().hex
+    response.set_cookie(
+        key="oauth_state",
+        value=state,
+        httponly=True,
+        samesite="lax",
+        secure=settings.environment == "production",
+        max_age=600,
+    )
+    auth_url = (
+        f"https://accounts.google.com/o/oauth2/v2/auth?"
+        f"client_id={settings.google_oauth_client_id}&"
+        f"redirect_uri={settings.google_oauth_redirect_uri}&"
+        f"response_type=code&"
+        f"scope=https://www.googleapis.com/auth/classroom.courses.readonly%20https://www.googleapis.com/auth/gmail.readonly&"
+        f"state={state}&"
+        f"access_type=offline&prompt=consent"
+    )
+    return {"auth_url": auth_url, "state": state}
+
+
 @app.get(f"{settings.api_v1_prefix}/integrations/google/callback")
 async def google_oauth_callback(
+    request: Request,
     code: Optional[str] = Query(None),
     state: Optional[str] = Query(None),
     error: Optional[str] = Query(None),
@@ -305,6 +332,11 @@ async def google_oauth_callback(
         raise HTTPException(status_code=400, detail=f"Google OAuth error: {error}")
     if not code:
         raise HTTPException(status_code=400, detail="Missing authorization code")
+    if not state or len(state.strip()) == 0:
+        raise HTTPException(status_code=400, detail="Missing OAuth state parameter (CSRF protection)")
+    expected_state = request.cookies.get("oauth_state")
+    if not expected_state or expected_state != state:
+        raise HTTPException(status_code=400, detail="OAuth state mismatch or expired cookie (potential CSRF attack)")
     return {
         "status": "success",
         "message": "Google Classroom and Gmail successfully authorized. Coursework sync will run in background.",
