@@ -50,6 +50,10 @@ class EngBuddyRepository(
     val overlapPrefs: Flow<List<SubjectOverlapPrefEntity>> = dao.observeOverlapPrefs()
 
     suspend fun ensureSeeded() = withContext(Dispatchers.IO) {
+        // Enforce 30-day Trash Bin retention (Blueprint Edge Case #2)
+        val thirtyDaysAgo = System.currentTimeMillis() - (30L * 24 * 60 * 60 * 1000L)
+        dao.purgeExpiredTrash(thirtyDaysAgo)
+
         if (dao.getUserProfileOnce() == null) {
             dao.upsertUserProfile(UserProfileEntity())
         }

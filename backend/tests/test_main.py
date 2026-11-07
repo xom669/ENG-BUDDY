@@ -3,6 +3,7 @@ from __future__ import annotations
 import pytest
 from fastapi.testclient import TestClient
 
+from app.core.config import settings
 from app.main import app
 from app.services.vision_pipeline import OpenCvNotePipeline
 
@@ -114,7 +115,8 @@ def test_google_oauth_callback() -> None:
 
 
 def test_whatsapp_webhook_verification() -> None:
-    res = client.get("/api/v1/integrations/whatsapp/webhook?hub.mode=subscribe&hub.verify_token=&hub.challenge=test_challenge")
+    token = settings.whatsapp_verify_token
+    res = client.get(f"/api/v1/integrations/whatsapp/webhook?hub.mode=subscribe&hub.verify_token={token}&hub.challenge=test_challenge")
     assert res.status_code == 200
     assert res.text == "test_challenge"
 
