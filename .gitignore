@@ -16,6 +16,8 @@
 local.properties
 secrets.properties
 .env
+.env.local
+.env.*.local
 debug.keystore
 .venv/
 __pycache__/
