@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">EngBuddy</string>
+    <string name="nav_home">Home</string>
+    <string name="nav_vault">Smart Vault</string>
+    <string name="nav_scanner">Scanner</string>
+    <string name="nav_attendance">Bunk &amp; Hacks</string>
+    <string name="nav_ai_buddy">AI Buddy</string>
+    <string name="firebase_disabled_notice">Firebase AI Logic was declined during setup. Showing grounded local RAG preview responses. Enable Firebase to connect live Gemini models.</string>
+    <string name="offline_queue_badge">Offline Queue</string>
+    <string name="trash_retention_notice">Lower-quality duplicates &amp; deleted notes are kept in the 30-day Trash Bin with one-tap restore.</string>
+    <string name="consent_google_scopes">Least-privilege read-only access: classroom.courses.readonly, classroom.coursework.me.readonly, gmail.readonly</string>
+</resources>

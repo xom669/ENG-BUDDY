@@ -1,0 +1,6 @@
+{
+  "name": "EngBuddy",
+  "description": "AI-powered engineering student companion for note scanning, smart vault organization, attendance bunk calculations, and RAG exam cramming.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
